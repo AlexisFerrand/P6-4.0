@@ -3,12 +3,18 @@ const Sauces = require('../models/Sauces');
 exports.createSauces = (req, res, next) => {
     delete req.body._id;
     const sauces = new Sauces({
-        ...req.body
+        ...req.body,
+        userId: req.auth.id,
+        imageUrl: ""
     });
+    console.log(sauces)
     sauces.save()
     .then(() => res.status(201).json({ message: 'Objet enregistré !'}))
-    .catch(error => res.status(400).json({ error }));
+    .catch(error => {
+        console.log(error)
+        res.status(400).json({ error })});
 };
+
 
 exports.modifySauces = (req, res, next) => {
     Sauces.updateOne({ _id: req.params.id }, { ...req.body, _id: req.params.id })
