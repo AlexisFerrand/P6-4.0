@@ -1,4 +1,5 @@
 const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
 const User = require('../models/User');
 //Création de nouveaux utilisateurs
 exports.signup = (req, res, next) => {
@@ -33,7 +34,12 @@ exports.login = (req, res, next) => {
             //si données rentré valides et trouvé dans la base de donnée on renvoie son userId et un token d'indentification 
             res.status(200).json({
                 userId: user._id, 
-                token: 'TOKEN'
+                //User id encodé
+                token: jwt.sign(
+                    { userId: user._id},
+                    'RANDOM_TOKEN_SECRET',
+                    {expiresIn: '24h'}
+                )
             });
         })
         .catch(error => res.status(500).json({error}));
